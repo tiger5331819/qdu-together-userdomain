@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qdu.mapping.UserMapper">
+
+    <select id="findbyid" 
+            parameterType="int"  
+            resultType="qdu.together.userdomin.dao.User">
+        select *from user where userID=#{id}
+    </select>
+
+    <insert id="insert"
+            parameterType="qdu.together.userdomin.dao.User">
+            insert user values (#{userID},#{userName},#{userGender},#{userWechat},#{userBirthday},#{userAge},#{userJob},#{userWorkplace},#{userBackgroud})
+    </insert>
+          
+    <update id="update"
+            parameterType="qdu.together.userdomin.dao.User">
+            update user set
+              userName = #{userName},
+              userGender = #{userGender},
+              userWechat = #{userWechat},
+              userBirthday=#{userBirthday},
+              userAge=#{userAge},
+              userJob=#{userJob},
+              userWorkplace=#{userWorkplace},
+              userBackgroud=#{userBackgroud}
+            where userID = #{userID};
+     </update>
+          
+    <delete id="delete"
+            parameterType="int">
+            delete from user where userID = #{id}
+            
+    </delete>
+</mapper>
