@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import qdu.together.userdomin.core.UserDomainCore;
+import qdu.together.userdomin.entity.UserEntity;
 import qdu.together.userdomin.respository.UserRespository;
 
 @SpringBootApplication
@@ -21,7 +22,11 @@ public class DemoApplication {
         try {
             
             Thread.sleep(1000);
-            System.out.println(respository.getEntity(1002));
+            UserEntity entity= (UserEntity) respository.get(1047);
+            entity.getValue().userAge++;
+            entity.changeValue(entity.getValue()); 
+            respository.ChangeEntity(entity.getValue().userID, entity);
+            System.out.println(respository.get(1047));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

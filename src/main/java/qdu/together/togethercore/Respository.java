@@ -10,10 +10,12 @@ public abstract class Respository<K, V> extends Thread {
     private Map<K, V> Entity;
     private Map<K, Integer> EntityTTL;
     private Queue<V> AddEntity = new LinkedList<V>();
+    private int Cachesize;
 
-    protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL) {
+    protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize) {
         this.Entity = Entity;
         this.EntityTTL = EntityTTL;
+        this.Cachesize = Cachesize;
         Thread t = new Thread(this);
         t.start();
     }
@@ -21,34 +23,57 @@ public abstract class Respository<K, V> extends Thread {
     public void run() {
         try {
             while (true) {
-                CompletableFuture<?> future = CompletableFuture.runAsync(() -> {
+                CompletableFuture<K> future = CompletableFuture.supplyAsync(() -> {
+                    int MaxTTL = 0;
+                    K MaxK = null;
                     for (Map.Entry<K, Integer> entry : EntityTTL.entrySet()) {
                         K k = entry.getKey();
                         int ttl = entry.getValue();
-                        if (ttl == 10) {
+
+                        if (ttl == 100) {
+                            V vv=Entity.get(k);
                             EntityTTL.remove(k);
                             Entity.remove(k);
+                            SaveEntity(vv);
                         } else {
                             ttl++;
                             EntityTTL.replace(k, ttl);
+                        }                        
+                        if (ttl > MaxTTL) {
+                            MaxTTL = ttl;
+                            MaxK = k;
                         }
                     }
+                    return MaxK;
                 });
-                future.join();
-                V v = AddEntity.poll();
-                if (v!=null) {         
-                    K kk = GetEntityIdentity(v);
-                    Entity.put(kk, v);
-                    EntityTTL.put(kk, 0);
-                    System.out.println("Entity Add success!");
-                }
 
-                Thread.sleep(100);
+                K Maxk = future.get();
+                V v = AddEntity.poll();
+                if (v != null) {
+                    K kk = GetEntityIdentity(v);
+                    if(Cachesize>Entity.size()){
+                        Entity.put(kk, v);
+                        EntityTTL.put(kk, 0);
+                        System.out.println("Entity Add success!");                        
+                    }else{
+                        V vv=Entity.get(Maxk);
+                        EntityTTL.remove(Maxk);
+                        Entity.remove(Maxk);
+                        SaveEntity(vv);
+                        Entity.put(kk, v);
+                        EntityTTL.put(kk, 0);
+                        System.out.println("Entity Add success!"); 
+                    }
+
+                }
+                Thread.sleep(50);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
+    
+    public abstract void SaveEntity(V v);
 
     public abstract K GetEntityIdentity(V v);
 
@@ -73,6 +98,18 @@ public abstract class Respository<K, V> extends Thread {
         return Entity.get(k);
     }
 
+    public Boolean RemoveEntity(K k){
+        if(!Entity.containsKey(k)){
+            return false;
+        }else{
+            V v=Entity.get(k);
+            Entity.remove(k);
+            EntityTTL.remove(k);
+            SaveEntity(v);
+        }
+        return true;
+    }
+
     public Boolean DeleteEntity(K k){
         if(!Entity.containsKey(k)){
             return false;
@@ -82,5 +119,4 @@ public abstract class Respository<K, V> extends Thread {
         }
         return true;
     }
-
 }
