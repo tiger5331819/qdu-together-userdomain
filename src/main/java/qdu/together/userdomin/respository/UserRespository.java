@@ -1,15 +1,15 @@
 package qdu.together.userdomin.respository;
 
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import qdu.mapping.UserMapper;
+import qdu.together.togethercore.Respository;
 import qdu.together.userdomin.core.UserDomainCore;
 import qdu.together.userdomin.dao.User;
 import qdu.together.userdomin.entity.UserEntity;
 import qdu.together.userdomin.respository.dto.ValueToUser;
 
-public class UserRespository{
-    private Hashtable<Integer,UserEntity> userEntity=new Hashtable<Integer,UserEntity>();
+public class UserRespository extends Respository<Integer,UserEntity>{
     private UserMapper mapper;
 
     private volatile static UserRespository instance;
@@ -22,24 +22,41 @@ public class UserRespository{
         return instance;  
     }  
 
+
     private UserRespository (){
+
+        super(new ConcurrentHashMap<>(127),
+              new ConcurrentHashMap<>(127));
+
+
+            
+    }
+    public void UserRespositoryConfiguration(){
             UserDomainCore core=UserDomainCore.getInstance();
             mapper= (UserMapper) core.Context.getBean("userMapper");
             User user=mapper.findbyid(1002);
             UserEntity entity=new UserEntity(user);
-            userEntity.put(user.getUserID(), entity);
+
+            AddEntityToAddQueue(entity);
+
             user=mapper.findbyid(1047);
             entity=new UserEntity(user);
-            userEntity.put(user.getUserID(),entity);
+            AddEntityToAddQueue(entity);
+            System.out.println("UserRespository is ready!");
     }  
      
-    public Object getEntity(int id){
-        return userEntity.get(id);
+    public Object get(int id){
+        return getEntity(id);
     }
     public void updateEntity(UserEntity entity){
         ValueToUser dto=new ValueToUser();      
         mapper.update((User) dto.changeData(entity.getValue()));
-        userEntity.replace(entity.getValue().userID, entity);
+        ChangeEntity(GetEntityIdentity(entity), entity);
+    }
+
+    @Override
+    public Integer GetEntityIdentity(UserEntity v) {
+        return v.getValue().userID;
     }
 
 }

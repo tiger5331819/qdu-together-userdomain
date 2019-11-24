@@ -7,14 +7,25 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import qdu.together.userdomin.core.UserDomainCore;
+import qdu.together.userdomin.respository.UserRespository;
 
 @SpringBootApplication
 @MapperScan("qdu.mapping")
 public class DemoApplication {
 
-    public static void main(String[] args) throws IOException {    
-        UserDomainCore core=UserDomainCore.getInstance();
+    public static void main(String[] args) throws IOException {
+        UserDomainCore core = UserDomainCore.getInstance();
         core.setApplicationContext(SpringApplication.run(DemoApplication.class, args));
+        core.Configuration();
+        UserRespository respository = UserRespository.getInstance();
+        try {
+            
+            Thread.sleep(1000);
+            System.out.println(respository.getEntity(1002));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
     }
     
     /* @Bean

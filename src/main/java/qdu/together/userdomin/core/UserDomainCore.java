@@ -4,6 +4,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import qdu.together.userdomin.respository.UserRespository;
+
 public class UserDomainCore implements ApplicationContextAware {
 
     public ApplicationContext Context;
@@ -21,7 +23,12 @@ public class UserDomainCore implements ApplicationContextAware {
     }
 
     public UserDomainCore() {
-
+        UserRespository.getInstance();
+        
+    }
+    public void Configuration(){
+        UserRespository respository= UserRespository.getInstance();
+        respository.UserRespositoryConfiguration();
     }
 
     @Override
