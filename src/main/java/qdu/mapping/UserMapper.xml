@@ -5,38 +5,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="qdu.mapping.UserMapper">
 
     <select id="findAll"
-            resultType="qdu.together.userdomin.dao.User">
+            resultType="qdu.together.userdomain.dao.User">
         select * from user 
     </select>
 
     <select id="findbyid" 
-            parameterType="int"  
-            resultType="qdu.together.userdomin.dao.User">
-        select *from user where userID=#{id}
+            parameterType="String"  
+            resultType="qdu.together.userdomain.dao.User">
+        select *from user where user_ID=#{id}
     </select>
 
     <insert id="insert"
-            parameterType="qdu.together.userdomin.dao.User">
-            insert user values (#{userID},#{userName},#{userGender},#{userWechat},#{userBirthday},#{userAge},#{userJob},#{userWorkplace},#{userBackgroud})
+            parameterType="qdu.together.userdomain.dao.User">
+            insert user values (#{userID},#{userName},#{userGender},#{userWechat},#{userBirthday},#{userAge},#{userJob},#{userWorkplace},#{userBackgroud},#{userTouxiang})
     </insert>
           
     <update id="update"
-            parameterType="qdu.together.userdomin.dao.User">
+            parameterType="qdu.together.userdomain.dao.User">
             update user set
-              userName = #{userName},
-              userGender = #{userGender},
-              userWechat = #{userWechat},
-              userBirthday=#{userBirthday},
-              userAge=#{userAge},
-              userJob=#{userJob},
-              userWorkplace=#{userWorkplace},
-              userBackgroud=#{userBackgroud}
-            where userID = #{userID};
+              user_Name = #{userName},
+              user_Gender = #{userGender},
+              user_Wechat = #{userWechat},
+              user_Birthday=#{userBirthday},
+              user_Age=#{userAge},
+              user_Job=#{userJob},
+              user_Workplace=#{userWorkplace},
+              user_Backgroud=#{userBackgroud},
+              user_Touxiang=#{userTouxiang}
+            where user_ID = #{userID};
      </update>
           
     <delete id="delete"
-            parameterType="int">
-            delete from user where userID = #{id}
+            parameterType="String">
+            delete from user where user_ID = #{id}
             
     </delete>
 </mapper>

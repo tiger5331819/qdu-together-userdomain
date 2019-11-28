@@ -11,11 +11,14 @@ public abstract class Respository<K, V> extends Thread {
     private Map<K, Integer> EntityTTL;
     private Queue<V> AddEntity = new LinkedList<V>();
     private int Cachesize;
+    private int Timeout;
+    private int Timeout_Close=99999;
 
-    protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize) {
+    protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize,int Timeout) {
         this.Entity = Entity;
         this.EntityTTL = EntityTTL;
         this.Cachesize = Cachesize;
+        this.Timeout= Timeout < Timeout_Close ?Timeout:Timeout_Close;
         Thread t = new Thread(this);
         t.start();
     }
@@ -30,7 +33,7 @@ public abstract class Respository<K, V> extends Thread {
                         K k = entry.getKey();
                         int ttl = entry.getValue();
 
-                        if (ttl == 100) {
+                        if (ttl == Timeout&&ttl!=Timeout_Close) {
                             V vv=Entity.get(k);
                             EntityTTL.remove(k);
                             Entity.remove(k);

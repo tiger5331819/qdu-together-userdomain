@@ -1,5 +1,5 @@
 package qdu.together.togethercore;
 
-public interface DataTransfer<T>{
-    public Object changeData(T Value);
+public interface DataTransfer<ValueObject>{
+    public Object changeData(ValueObject Value);
 }

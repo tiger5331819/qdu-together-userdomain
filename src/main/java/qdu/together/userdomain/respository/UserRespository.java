@@ -1,16 +1,16 @@
-package qdu.together.userdomin.respository;
+package qdu.together.userdomain.respository;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import qdu.mapping.UserMapper;
 import qdu.together.togethercore.Respository;
 import qdu.together.togethercore.RespositoryAccess;
-import qdu.together.userdomin.core.UserDomainCore;
-import qdu.together.userdomin.dao.User;
-import qdu.together.userdomin.entity.UserEntity;
-import qdu.together.userdomin.respository.dto.ValueToUser;
+import qdu.together.userdomain.core.UserDomainCore;
+import qdu.together.userdomain.dao.User;
+import qdu.together.userdomain.entity.UserEntity;
+import qdu.together.userdomain.respository.dto.ValueToUser;
 
-public class UserRespository extends Respository<Integer,UserEntity> 
+public class UserRespository extends Respository<String,UserEntity> 
                              implements RespositoryAccess{
     private UserMapper mapper;
 
@@ -28,17 +28,17 @@ public class UserRespository extends Respository<Integer,UserEntity>
     private UserRespository (){
 
         super(new ConcurrentHashMap<>(),
-              new ConcurrentHashMap<>(),1);    
+              new ConcurrentHashMap<>(),127,99999);    
     }
     public void UserRespositoryConfiguration(){
             UserDomainCore core=UserDomainCore.getInstance();
-            mapper= (UserMapper) core.Context.getBean("userMapper");
-            User user=mapper.findbyid(1002);
+            mapper= (UserMapper) core.getContext().getBean("userMapper");
+            User user=mapper.findbyid("1001");
             UserEntity entity=new UserEntity(user);
 
             AddEntityToAddQueue(entity);
 
-            user=mapper.findbyid(1047);
+            user=mapper.findbyid("1047");
             entity=new UserEntity(user);
             AddEntityToAddQueue(entity);
             System.out.println("UserRespository is ready!");
@@ -46,13 +46,13 @@ public class UserRespository extends Respository<Integer,UserEntity>
      
 
     @Override
-    public Integer GetEntityIdentity(UserEntity v) {
+    public String GetEntityIdentity(UserEntity v) {
         return v.getValue().userID;
     }
 
     @Override
     public Object get(Object obj) {
-        return getEntity((Integer)obj);
+        return getEntity((String)obj);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UserRespository extends Respository<Integer,UserEntity>
 
     @Override
     public void removeEntity(Object obj) {
-        RemoveEntity((Integer)obj);
+        RemoveEntity((String)obj);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class UserRespository extends Respository<Integer,UserEntity>
 
     @Override
     public void deleteEntity(Object obj) {
-        DeleteEntity((Integer)obj);
-        mapper.delete((Integer)obj);
+        DeleteEntity((String)obj);
+        mapper.delete((String)obj);
 
     }
 

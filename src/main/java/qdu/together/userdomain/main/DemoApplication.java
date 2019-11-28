@@ -1,39 +1,27 @@
-package qdu.together.userdomin.main;
+package qdu.together.userdomain.main;
 
 import java.io.IOException;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-import qdu.together.userdomin.core.UserDomainCore;
-import qdu.together.userdomin.entity.UserEntity;
-import qdu.together.userdomin.respository.UserRespository;
+import qdu.together.togethercore.AMQPNet;
+import qdu.together.userdomain.core.UserDomainCore;
 
 @SpringBootApplication
 @MapperScan("qdu.mapping")
+@ComponentScan("qdu")
 public class DemoApplication {
 
     public static void main(String[] args) throws IOException {
         UserDomainCore core = UserDomainCore.getInstance();
         core.setApplicationContext(SpringApplication.run(DemoApplication.class, args));
-        core.Configuration();
-        UserRespository respository = UserRespository.getInstance();
-        try {
-            
-            Thread.sleep(1000);
-            UserEntity entity= (UserEntity) respository.get(1047);
-            entity.getValue().userAge++;
-            entity.changeValue(entity.getValue()); 
-            respository.ChangeEntity(entity.getValue().userID, entity);
-            System.out.println(respository.get(1047));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
+        AMQPNet.AMQPConfiguration("Test");
     }
     
-    /* @Bean
+/*     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
 

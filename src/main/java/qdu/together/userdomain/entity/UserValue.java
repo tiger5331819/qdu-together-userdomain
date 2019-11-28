@@ -1,9 +1,9 @@
-package qdu.together.userdomin.entity;
+package qdu.together.userdomain.entity;
 
 import java.sql.Date;
 
 public class UserValue {
-	public int userID;
+	public String userID;
 	public String userName;
 	public String userGender;
 	public String userWechat;
@@ -12,6 +12,7 @@ public class UserValue {
 	public String userJob;
 	public String userWorkplace;
 	public byte[] userBackgroud;
+	public byte[] userTouxiang;
 
 	@Override
 	public String toString() {

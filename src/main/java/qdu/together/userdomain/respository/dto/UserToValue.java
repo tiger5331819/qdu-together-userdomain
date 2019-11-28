@@ -1,8 +1,8 @@
-package qdu.together.userdomin.respository.dto;
+package qdu.together.userdomain.respository.dto;
 
 import qdu.together.togethercore.DataTransfer;
-import qdu.together.userdomin.dao.User;
-import qdu.together.userdomin.entity.UserValue;
+import qdu.together.userdomain.dao.User;
+import qdu.together.userdomain.entity.UserValue;
 
 public  class  UserToValue implements DataTransfer<User> {
 
