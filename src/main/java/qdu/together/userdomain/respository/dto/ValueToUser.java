@@ -1,6 +1,6 @@
 package qdu.together.userdomain.respository.dto;
 
-import qdu.together.togethercore.DataTransfer;
+import qdu.together.togethercore.respository.DataTransfer;
 import qdu.together.userdomain.dao.User;
 import qdu.together.userdomain.entity.UserValue;
 

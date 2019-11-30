@@ -1,6 +1,6 @@
-package qdu.together.togethercore;
+package qdu.together.togethercore.respository;
 public interface RespositoryAccess{
-    public Object get(Object obj);
+    public Object getEntity(Object obj);
     public void updateEntity(Object obj);
     public void deleteEntity(Object obj);
     public void putEntity(Object obj);

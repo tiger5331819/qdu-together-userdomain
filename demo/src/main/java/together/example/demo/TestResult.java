@@ -1,4 +1,4 @@
-package qdu.together.userdomain.main;
+package together.example.demo;
 
 import java.util.concurrent.LinkedBlockingQueue;
 

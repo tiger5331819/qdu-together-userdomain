@@ -3,7 +3,7 @@ package qdu.together.userdomain.netservice;
 import org.springframework.stereotype.Component;
 
 import qdu.together.net.Message;
-import qdu.together.togethercore.NetService;
+import qdu.together.togethercore.service.NetService;
 import qdu.together.userdomain.core.UserDomainCore;
 import qdu.together.userdomain.entity.UserEntity;
 import qdu.together.userdomain.respository.UserRespository;
@@ -15,7 +15,7 @@ public class ServiceExample implements NetService {
     public void doService(Message message) {
         System.out.println("ServiceExample");
         UserRespository res=UserRespository.getInstance();
-        UserEntity entity= (UserEntity) res.get("1001");
+        UserEntity entity= (UserEntity) res.getEntity(message.Data);
         Message mes=new Message();
         mes.Data=entity.getValue();
         mes.LocalQueueName=message.DestinationQueueName;

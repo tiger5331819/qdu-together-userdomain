@@ -1,4 +1,4 @@
-package qdu.together.togethercore;
+package qdu.together.togethercore.respository;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -37,7 +37,7 @@ public abstract class Respository<K, V> extends Thread {
                             V vv=Entity.get(k);
                             EntityTTL.remove(k);
                             Entity.remove(k);
-                            SaveEntity(vv);
+                            saveEntity(vv);
                         } else {
                             ttl++;
                             EntityTTL.replace(k, ttl);
@@ -53,7 +53,7 @@ public abstract class Respository<K, V> extends Thread {
                 K Maxk = future.get();
                 V v = AddEntity.poll();
                 if (v != null) {
-                    K kk = GetEntityIdentity(v);
+                    K kk = getEntityIdentity(v);
                     if(Cachesize>Entity.size()){
                         Entity.put(kk, v);
                         EntityTTL.put(kk, 0);
@@ -62,7 +62,7 @@ public abstract class Respository<K, V> extends Thread {
                         V vv=Entity.get(Maxk);
                         EntityTTL.remove(Maxk);
                         Entity.remove(Maxk);
-                        SaveEntity(vv);
+                        saveEntity(vv);
                         Entity.put(kk, v);
                         EntityTTL.put(kk, 0);
                         System.out.println("Entity Add success!"); 
@@ -76,11 +76,11 @@ public abstract class Respository<K, V> extends Thread {
         }
     }
     
-    public abstract void SaveEntity(V v);
+    protected abstract void saveEntity(V v);
 
-    public abstract K GetEntityIdentity(V v);
+    protected abstract K getEntityIdentity(V v);
 
-    public Boolean ChangeEntity(K k,V v){
+    protected Boolean changeEntity(K k,V v){
         if(Entity.containsKey(k)){
             Entity.replace(k, v);
         }else{
@@ -89,7 +89,7 @@ public abstract class Respository<K, V> extends Thread {
         return true;
     }
 
-    public Boolean AddEntityToAddQueue(V v){
+    protected Boolean addEntityToAddQueue(V v){
         if(AddEntity.offer(v)){
             return true;
         }else{
@@ -97,23 +97,23 @@ public abstract class Respository<K, V> extends Thread {
         }
     }
 
-    public V getEntity(K k){
+    protected V get(K k){
         return Entity.get(k);
     }
 
-    public Boolean RemoveEntity(K k){
+    protected Boolean remove(K k){
         if(!Entity.containsKey(k)){
             return false;
         }else{
             V v=Entity.get(k);
             Entity.remove(k);
             EntityTTL.remove(k);
-            SaveEntity(v);
+            saveEntity(v);
         }
         return true;
     }
 
-    public Boolean DeleteEntity(K k){
+    protected Boolean delete(K k){
         if(!Entity.containsKey(k)){
             return false;
         }else{

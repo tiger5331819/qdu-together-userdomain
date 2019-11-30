@@ -1,4 +1,4 @@
-package qdu.together.togethercore;
+package qdu.together.togethercore.core;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -8,12 +8,15 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import qdu.together.net.Message;
 import qdu.together.net.rabbitmq.MQproduce;
+import qdu.together.togethercore.service.NetService;
 
 public abstract class DomainCore implements ApplicationContextAware, InvocationHandler {
     protected ApplicationContext Context;
@@ -85,6 +88,7 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
     public void finish(){
         Message message=sendMessageQueue.poll();
         if(message!=null){
+            message.Data=JSONObject.toJSONString(message.Data);
             MQproduce.sendMessage(message);
             System.out.println("finish");
         }

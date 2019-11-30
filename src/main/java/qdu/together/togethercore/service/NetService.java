@@ -1,4 +1,4 @@
-package qdu.together.togethercore;
+package qdu.together.togethercore.service;
 
 import qdu.together.net.Message;
 

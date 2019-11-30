@@ -1,7 +1,7 @@
 package qdu.together.userdomain.core;
 
-import qdu.together.togethercore.AMQPNet;
-import qdu.together.togethercore.DomainCore;
+import qdu.together.togethercore.amqp.AMQPNet;
+import qdu.together.togethercore.core.DomainCore;
 import qdu.together.userdomain.respository.UserRespository;
 
 public class UserDomainCore extends DomainCore {

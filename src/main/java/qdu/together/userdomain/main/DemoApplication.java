@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import qdu.together.togethercore.AMQPNet;
 import qdu.together.userdomain.core.UserDomainCore;
 
 @SpringBootApplication
@@ -18,7 +17,6 @@ public class DemoApplication {
     public static void main(String[] args) throws IOException {
         UserDomainCore core = UserDomainCore.getInstance();
         core.setApplicationContext(SpringApplication.run(DemoApplication.class, args));
-        AMQPNet.AMQPConfiguration("Test");
     }
     
 /*     @Bean

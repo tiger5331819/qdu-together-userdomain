@@ -1,4 +1,4 @@
-package qdu.together.togethercore;
+package together.example.togethercore.amqp;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;

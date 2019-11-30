@@ -9,5 +9,5 @@ public interface UserMapper{
     public int update(User user);
     public int delete(String id);
     public int insert(User user);
-    public List<User> find();
+    public List<User> findAll();
 }

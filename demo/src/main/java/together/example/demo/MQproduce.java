@@ -1,21 +1,17 @@
-package qdu.together.net.rabbitmq;
+package together.example.demo;
 
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
 
-import qdu.together.net.Message;
-import qdu.together.togethercore.amqp.AMQPproduce;
-
+import together.example.togethercore.amqp.AMQPproduce;
 
 @Component
-public class MQproduce extends AMQPproduce{
-    
+public class MQproduce extends AMQPproduce {
 
     public MQproduce(AmqpTemplate template) {
         super(template);
     }
-
     public static Boolean sendMessage(Message message) {
         try{
             Template.convertAndSend(message.DestinationQueueName, message);
@@ -25,5 +21,4 @@ public class MQproduce extends AMQPproduce{
         }
         return true;
     }
-
 }
