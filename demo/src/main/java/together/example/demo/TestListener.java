@@ -7,6 +7,7 @@ public class TestListener{
 
     @RabbitListener(queues = "Test")
     public void getMessage(Message message){
+        System.out.println(message);
         TestResult.queue.add(message);
     }
 

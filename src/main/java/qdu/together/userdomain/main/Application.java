@@ -11,12 +11,12 @@ import qdu.together.userdomain.core.UserDomainCore;
 
 @SpringBootApplication
 @MapperScan("qdu.mapping")
-@ComponentScan("qdu")
-public class DemoApplication {
+@ComponentScan("qdu.together.net")
+@ComponentScan("qdu.together.togethercore.amqp")
+public class Application {
 
     public static void main(String[] args) throws IOException {
-        UserDomainCore core = UserDomainCore.getInstance();
-        core.setApplicationContext(SpringApplication.run(DemoApplication.class, args));
+        UserDomainCore.getInstance().run(SpringApplication.run(Application.class, args));
     }
     
 /*     @Bean

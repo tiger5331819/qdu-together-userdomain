@@ -11,7 +11,6 @@ import qdu.together.togethercore.amqp.AMQPproduce;
 @Component
 public class MQproduce extends AMQPproduce{
     
-
     public MQproduce(AmqpTemplate template) {
         super(template);
     }

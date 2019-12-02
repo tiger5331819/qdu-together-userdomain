@@ -5,4 +5,5 @@ public interface RespositoryAccess{
     public void deleteEntity(Object obj);
     public void putEntity(Object obj);
     public void removeEntity(Object obj);
+    public void Configuration();
 }

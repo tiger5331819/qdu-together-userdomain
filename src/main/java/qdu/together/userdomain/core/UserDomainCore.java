@@ -2,7 +2,6 @@ package qdu.together.userdomain.core;
 
 import qdu.together.togethercore.amqp.AMQPNet;
 import qdu.together.togethercore.core.DomainCore;
-import qdu.together.userdomain.respository.UserRespository;
 
 public class UserDomainCore extends DomainCore {
 
@@ -21,14 +20,11 @@ public class UserDomainCore extends DomainCore {
     }
 
     public UserDomainCore() {
-          setDomainName("UserDomain");
+          super("UserDomain","qdu.together.userdomain");
     }
 
     @Override
     public void Configuration(){
-        UserRespository respository= UserRespository.getInstance();
-        respository.UserRespositoryConfiguration();
-        System.out.println(getDomainName());
         AMQPNet.AMQPConfiguration(getDomainName());
     }
 }

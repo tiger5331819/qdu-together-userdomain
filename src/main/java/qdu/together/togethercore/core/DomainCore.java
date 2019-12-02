@@ -1,11 +1,15 @@
 package qdu.together.togethercore.core;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +20,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import qdu.together.net.Message;
 import qdu.together.net.rabbitmq.MQproduce;
+import qdu.together.togethercore.respository.RespositoryAccess;
 import qdu.together.togethercore.service.NetService;
 
 public abstract class DomainCore implements ApplicationContextAware, InvocationHandler {
@@ -24,26 +29,67 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
     private NetService netservice;
     private Queue<Message> sendMessageQueue = new LinkedList<Message>();
     private BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingDeque<Message>();
+    private Map<String, Map<String, Class<?>>> Classes = new ConcurrentHashMap<>();
+
+    public DomainCore(String domainName, String packageName) {
+        this.DomainName = domainName;
+        try {
+            ClassScanner scanner = new ClassScanner(packageName);
+            Classes.put("DomainService", scanner.getDomainServiceClass());
+            Classes.put("DomainRespository", scanner.getDomainRespository());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run(ApplicationContext applicationContext) {
+        setApplicationContext(applicationContext);
+        CoreConfiguration();
+        CoreRun();
+    }
+
+    private void CoreConfiguration() {
+        Map<String, Class<?>> Respository = Classes.get("DomainRespository");
+        for (Entry<String, Class<?>> res : Respository.entrySet()) {
+            Class<?> anno = res.getValue();
+            Method[] methods = anno.getMethods();
+            for (Method method : methods) {
+                if (method.getName().equals("getInstance")) {
+                    try {
+                        RespositoryAccess acc= (RespositoryAccess) method.invoke(anno);
+                        acc.Configuration();
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        Configuration();
+    }
 
     public abstract void Configuration();
 
-
-    protected void CoreRun() {   
+    protected void CoreRun() {
         new Thread() {
             public void run() {
                 try {
                     Configuration();
-                    System.out.println(DomainName+" Core is ready!");
-                    while(true){
+                    System.out.println(DomainName + " Core is ready!");
+                    Map<String, Class<?>> DomainService = Classes.get("DomainService");
+                    while (true) {
                         Message message = (Message) receiveMessageQueue.take();
-                        new Thread(){
-                            public void run(){
-                                NetService service=(NetService)createProxy((NetService)Context.getBean(message.ServiceRequest));
-                                service.doService(message);
+                        new Thread() {
+                            public void run() {                            
+                                try {
+                                    NetService service = (NetService) createProxy(
+                                            (NetService) DomainService.get(message.ServiceRequest).newInstance());
+                                    service.doService(message);
+                                } catch (InstantiationException | IllegalAccessException e) {
+                                    e.printStackTrace();
+                                }                              
                             }
                         }.start();                        
-                    }
-                    
+                    }   
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -54,7 +100,6 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
     @Override
     public  void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.Context = applicationContext;
-        CoreRun();
     }
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)throws Throwable{
@@ -64,16 +109,13 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
         return obj;
     }
 
-    
     public ApplicationContext getContext(){
         return Context;
     }
-    protected void setDomainName(String DomainName){
-        this.DomainName=DomainName;
-    }
     protected String getDomainName(){
         return DomainName;
-    }
+    }    
+
 
 
     public void setNewreceiveMessage(Message message){
@@ -82,13 +124,35 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
     public void setsendMessage(Message message){
         sendMessageQueue.add(message);
     }
+
+    public RespositoryAccess getRespository(String RespositoryName){
+        Class<?>anno=Classes.get("DomainRespository").get(RespositoryName);
+        Method[] methods = anno.getMethods();
+        for(Method method :methods){
+            if (method.getName().equals("getInstance")) {
+                try {
+                    return (RespositoryAccess) method.invoke(anno);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
     public void prepare(){
         System.out.println("prepare");
     }
     public void finish(){
-        Message message=sendMessageQueue.poll();
-        if(message!=null){
-            message.Data=JSONObject.toJSONString(message.Data);
+        Message msg=sendMessageQueue.poll();
+        if(msg!=null){
+            Message message=new Message();
+            message.LocalQueueName=msg.DestinationQueueName;
+            message.DestinationQueueName=msg.LocalQueueName;
+            message.ServiceRequest=msg.ServiceRequestSource;
+            message.ServiceRequestSource=msg.ServiceRequest;
+            message.Data=JSONObject.toJSONString(msg.Data);
+            message.isSuccessBoolean=msg.isSuccessBoolean;
             MQproduce.sendMessage(message);
             System.out.println("finish");
         }
@@ -96,7 +160,7 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
 
     public Object createProxy(NetService netservice){
         this.netservice=netservice;
-        return Proxy.newProxyInstance(this.netservice.getClass().getClassLoader(),
+        return Proxy.newProxyInstance(netservice.getClass().getClassLoader(),
                                      netservice.getClass().getInterfaces(), this);
     }
 

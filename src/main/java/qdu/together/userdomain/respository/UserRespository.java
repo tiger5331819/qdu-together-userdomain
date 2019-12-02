@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import qdu.mapping.UserMapper;
+import qdu.together.togethercore.respository.DomainRespository;
 import qdu.together.togethercore.respository.Respository;
 import qdu.together.togethercore.respository.RespositoryAccess;
 import qdu.together.userdomain.core.UserDomainCore;
@@ -11,6 +12,7 @@ import qdu.together.userdomain.dao.User;
 import qdu.together.userdomain.entity.UserEntity;
 import qdu.together.userdomain.respository.dto.ValueToUser;
 
+@DomainRespository(RespositoryName = "UserRespository")
 public class UserRespository extends Respository<String,UserEntity> 
                              implements RespositoryAccess{
 
@@ -32,7 +34,9 @@ public class UserRespository extends Respository<String,UserEntity>
         super(new ConcurrentHashMap<>(),
               new ConcurrentHashMap<>(),127,99999);    
     }
-    public void UserRespositoryConfiguration(){
+    
+    @Override
+    public void Configuration(){
             UserDomainCore core=UserDomainCore.getInstance();
             this.mapper= (UserMapper) core.getContext().getBean("userMapper");
 
