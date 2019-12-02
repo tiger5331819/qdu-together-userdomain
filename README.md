@@ -7,7 +7,7 @@
 ## 后台框架
 
 工具使用：Spring boot+Spring Framework+Mybatis+RabbitMQ  
-依赖项配置：配置[application.properties](https://github.com/tiger5331819/qdu-together-userdomain/blob/master/demo/src/main/resources/application.properties)  其余配置通过Java Annotation来实现
+依赖项配置：配置[application.properties](https://github.com/tiger5331819/qdu-together-userdomain/blob/master/src/main/resources/application.properties)  其余配置通过Java Annotation来实现
 
 基本思想：DDD（*Domain-Driven-Design*）**[Eric Evans]**
 > · 通过spring-mybatis工具来进行Spring与Mybatis整合  
