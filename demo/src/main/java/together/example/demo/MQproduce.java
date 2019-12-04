@@ -4,7 +4,7 @@ import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
 
-import together.example.togethercore.amqp.AMQPproduce;
+import together.togethercore.amqp.AMQPproduce;
 
 @Component
 public class MQproduce extends AMQPproduce {

@@ -1,18 +1,22 @@
 package together.example.demo;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import together.togethercore.amqp.AMQPCore;
+import together.togethercore.amqp.ResultQueue;
+
+
+
 
 @RestController()
 @RequestMapping("/UserDomain")
+@ResultQueue("UserDomain.User")
 public class Test {
 
     @GetMapping("/User")
@@ -24,26 +28,29 @@ public class Test {
         message.LocalQueueName = "Test";
         message.DestinationQueueName = "UserDomain";
         message.ServiceRequest = "ServiceExample";
-        message.ServiceRequestSource="FindUser";
+        message.ServiceRequestSource="UserDomain.User";
         MQproduce.sendMessage(message);
-        Message result = (Message) TestResult.queue.take();
+        Message result = AMQPCore.getInstance().getResult("UserDomain.User");
         UserValue userValue=JSONObject.parseObject((String)result.Data, UserValue.class);
         ResultUser user=new ResultUser(userValue.userID,userValue.userName,userValue.userTouxiang);
         return user;   
     }  
-    @RequestMapping("/test")
-    public Object Tt(@RequestParam(value = "id",defaultValue = "45")String id){
-        List<Ttt> list=new LinkedList<Ttt>();
-        Ttt t=new Ttt();
-        t.a="1";t.b="1";
-        list.add(t);
-        t.a="2";t.b="2";
-        list.add(t);
-        for(Ttt tt :list){
-            System.out.println(tt);
-        }
+    @GetMapping("/User2")
+    public Object uiod() throws InterruptedException {
 
-        return list;
+        Message message = new Message();
+        message.Data = "1001";
+        message.isSuccessBoolean = "";
+        message.LocalQueueName = "Test";
+        message.DestinationQueueName = "UserDomain";
+        message.ServiceRequest = "ServiceExample";
+        message.ServiceRequestSource="UserDomain.User";
+        MQproduce.sendMessage(message);
+        Message result = AMQPCore.getInstance().getResult("UserDomain.User");
+        UserValue userValue=JSONObject.parseObject((String)result.Data, UserValue.class);
+        ResultUser user=new ResultUser(userValue.userID,userValue.userName,userValue.userTouxiang);
+        user.Uid="123";
+        return user;   
     }
 }
 class ResultUser{

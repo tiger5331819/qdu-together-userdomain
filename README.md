@@ -22,9 +22,15 @@
 层次调用顺序：业务逻辑层⇋领域服务层⇋领域实体  
 微内核提供基础服务与系统管理  
 
+![六边形架构 ](https://github.com/tiger5331819/qdu-together-userdomain/blob/master/六边形架构.png "六边形架构")  
+
 ### 后台框架详解  
 
-To be continue....
+![系统类图 ](https://github.com/tiger5331819/qdu-together-userdomain/blob/master/系统类图.png "系统类图")  
+
+核心：在DomainCore中实现类扫描与AOP，通过注解的方式来进行流程管理。  
+
+To be continue  
 
 ---
 
@@ -35,6 +41,43 @@ To be continue....
 1. **Version** 为版本号
 2. *Update* 为更新日期与当天更新版本号  
 3. ***正文*** 为更新内容
+
+### Vesion 0.3
+
+Update：2019.12.4
+Version 1
+· 在DomainCore中增加线程池ThreadPoolExecutor来进行多线程编程  
+· 增加AMQPCore用于对消息队列的控制和结果的Route（用于上游）  
+因此在监听函数中新的方法如下：  
+
+``` Java
+@RabbitListener(queues = "QueueName")
+public void getMessage(Message message){
+    AMQPCore.getInstance().setMessage(message);
+}
+```
+
+主函数中有了对AMQP新的配置方法：  
+
+```Java
+public static void main(String[] args) throws Exception {
+    SpringApplication.run(DemoApplication.class, args);
+    AMQPCore.getInstance().Configuration("QueueName", "ClassPackageName");
+}
+```
+
+因此就可以在Controller中通过结果队列来获得特定的结果：  
+
+```Java
+ Message result = AMQPCore.getInstance().getResult("ResultQueueName");
+```
+
+ResultQueueName从注解@ResultQueue中获得，注解使用方法：  
+
+```Java
+@RestController()
+@ResultQueue("ResultQueueName")
+```
 
 ### Vesion 0.2
 
@@ -54,13 +97,13 @@ public interface UserNetService extends NetService{
 非常建议使用依赖倒置的方法来访问Respository，即使用RespositoryAccess  
 
 ```Java
-RespositoryAccess res= (UserRespository) core.getRespository("UserRespository");
+RespositoryAccess res= (RespositoryType) core.getRespository("RespositoryName");
 ```
 
 当然也可以不使用RespositoryAccess来访问，毕竟Respository都需要继承RespositoryAccess接口  
 
 ```Java
-UserRespository res= (UserRespository) core.getRespository("UserRespository");
+UserRespository res= (RespositoryType) core.getRespository("RespositoryName");
 ```
 
 · 还有一点忘了说明了，关于Core的启动方式也迎来了新的改变  

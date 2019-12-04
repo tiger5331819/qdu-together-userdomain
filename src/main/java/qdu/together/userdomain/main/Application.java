@@ -15,7 +15,7 @@ import qdu.together.userdomain.core.UserDomainCore;
 @ComponentScan("qdu.together.togethercore.amqp")
 public class Application {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         UserDomainCore.getInstance().run(SpringApplication.run(Application.class, args));
     }
     

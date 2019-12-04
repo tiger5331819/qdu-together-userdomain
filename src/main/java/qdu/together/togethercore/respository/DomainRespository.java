@@ -10,5 +10,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DomainRespository{
+    /**
+     * 存储库名称
+     * @return String
+     */
     String RespositoryName();
 }

@@ -1,9 +1,12 @@
 package qdu.together.togethercore.respository;
+/**
+ * 存储库访问接口
+ */
 public interface RespositoryAccess{
     public Object getEntity(Object obj);
-    public void updateEntity(Object obj);
-    public void deleteEntity(Object obj);
-    public void putEntity(Object obj);
-    public void removeEntity(Object obj);
+    public Boolean updateEntity(Object obj);
+    public Boolean deleteEntity(Object obj);
+    public Boolean putEntity(Object obj);
+    public Boolean removeEntity(Object obj);
     public void Configuration();
 }

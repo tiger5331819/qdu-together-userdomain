@@ -6,14 +6,26 @@ import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * 存储库核心
+ * @param <K> Key
+ * @param <V> Value
+ */
 public abstract class Respository<K, V> extends Thread {
-    private Map<K, V> Entity;
-    private Map<K, Integer> EntityTTL;
+    private Map<K, V> Entity;//实体缓存
+    private Map<K, Integer> EntityTTL;//实体生存周期映射
     private Queue<V> AddEntity = new LinkedList<V>();
-    private int Cachesize;
-    private int Timeout;
-    private int Timeout_Close=99999;
+    private int Cachesize;//缓存大小
+    private int Timeout;//过期时间
+    private int Timeout_Close=99999;//关闭URL阈值
 
+    /**
+     * 核心存储库配置
+     * @param Entity 实体缓存实现
+     * @param EntityTTL 缓存生命周期实现
+     * @param Cachesize 缓存大小
+     * @param Timeout 过期时间（单位为次数 50ms/次）
+     */
     protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize,int Timeout) {
         this.Entity = Entity;
         this.EntityTTL = EntityTTL;
@@ -26,6 +38,7 @@ public abstract class Respository<K, V> extends Thread {
     public void run() {
         try {
             while (true) {
+                //URL实现
                 CompletableFuture<K> future = CompletableFuture.supplyAsync(() -> {
                     int MaxTTL = 0;
                     K MaxK = null;
@@ -76,7 +89,7 @@ public abstract class Respository<K, V> extends Thread {
         }
     }
     
-    protected abstract void saveEntity(V v);
+    protected abstract Boolean saveEntity(V v);
 
     protected abstract K getEntityIdentity(V v);
 

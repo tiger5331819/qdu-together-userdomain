@@ -4,15 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import together.example.togethercore.amqp.AMQPNet;
+import together.togethercore.amqp.AMQPCore;
+
 
 @ComponentScan("together")
 @SpringBootApplication
 public class DemoApplication {
 
-	public static void main(String[] args) {	
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(DemoApplication.class, args);
-		AMQPNet.AMQPConfiguration("Test");
+		AMQPCore.getInstance().Configuration("Test", "together");
 	}
 
 }

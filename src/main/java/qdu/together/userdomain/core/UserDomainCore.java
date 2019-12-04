@@ -5,7 +5,6 @@ import qdu.together.togethercore.core.DomainCore;
 
 public class UserDomainCore extends DomainCore {
 
-    
     private volatile static UserDomainCore instance;
 
     public static UserDomainCore getInstance() {
@@ -19,7 +18,7 @@ public class UserDomainCore extends DomainCore {
         return instance;
     }
 
-    public UserDomainCore() {
+    private UserDomainCore() {
           super("UserDomain","qdu.together.userdomain");
     }
 

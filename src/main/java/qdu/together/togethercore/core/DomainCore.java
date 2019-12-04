@@ -11,6 +11,9 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -23,15 +26,26 @@ import qdu.together.net.rabbitmq.MQproduce;
 import qdu.together.togethercore.respository.RespositoryAccess;
 import qdu.together.togethercore.service.NetService;
 
+/**
+ * 领域核心
+ * @author 苏琥元
+ * @version 0.3
+ */
 public abstract class DomainCore implements ApplicationContextAware, InvocationHandler {
     protected ApplicationContext Context;
+    private ThreadPoolExecutor netServicePool;
     private String DomainName;
     private NetService netservice;
     private Queue<Message> sendMessageQueue = new LinkedList<Message>();
     private BlockingQueue<Message> receiveMessageQueue = new LinkedBlockingDeque<Message>();
     private Map<String, Map<String, Class<?>>> Classes = new ConcurrentHashMap<>();
 
-    public DomainCore(String domainName, String packageName) {
+    /**
+     * 核心初始化
+     * @param domainName 领域名称
+     * @param packageName 完整包名
+     */
+    protected DomainCore(String domainName, String packageName) {
         this.DomainName = domainName;
         try {
             ClassScanner scanner = new ClassScanner(packageName);
@@ -45,6 +59,7 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
     public void run(ApplicationContext applicationContext) {
         setApplicationContext(applicationContext);
         CoreConfiguration();
+        netServicePool=new ThreadPoolExecutor(30, 100, 24L, TimeUnit.HOURS, new LinkedBlockingQueue<Runnable>(50));
         CoreRun();
     }
 
@@ -78,7 +93,8 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
                     Map<String, Class<?>> DomainService = Classes.get("DomainService");
                     while (true) {
                         Message message = (Message) receiveMessageQueue.take();
-                        new Thread() {
+                        netServicePool.execute(
+                            new Thread() {
                             public void run() {                            
                                 try {
                                     NetService service = (NetService) createProxy(
@@ -88,7 +104,8 @@ public abstract class DomainCore implements ApplicationContextAware, InvocationH
                                     e.printStackTrace();
                                 }                              
                             }
-                        }.start();                        
+                        });     
+                        System.out.println(netServicePool.getPoolSize());                 
                     }   
                 } catch (InterruptedException e) {
                     e.printStackTrace();

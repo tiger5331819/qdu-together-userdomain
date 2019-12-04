@@ -1,11 +1,16 @@
 package qdu.together.net;
+
+/**
+ * 自定义协议，用于规范系统传入传出数据
+ * ClassType：ValueObject
+ */
 public class Message{
-    public String ServiceRequest;
-    public String ServiceRequestSource;
-    public String LocalQueueName;
-    public String DestinationQueueName;
-    public Object Data;
-    public String isSuccessBoolean;
+    public String ServiceRequest;//目的服务名称
+    public String ServiceRequestSource;//本地服务名称
+    public String LocalQueueName;//本地通道名称
+    public String DestinationQueueName;//目的通道名称
+    public Object Data;//携带的数据
+    public String isSuccessBoolean;//所请求服务状态标识
 
     @Override
     public String toString() {

@@ -1,4 +1,4 @@
-package qdu.together.togethercore.service;
+package qdu.together.togethercore.amqp;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,10 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DomainService{
-    /**
-     * 领域服务名称
-     * @return String
-     */
-    String ServiceName() ;
+public @interface ResultQueue{
+    String value();
 }

@@ -3,6 +3,9 @@ package qdu.together.userdomain.dao;
 import java.sql.Date;
 import java.util.Arrays;
 
+/**
+ * DAO
+ */
 public class User {
 	private String userID;
 	private String userName;

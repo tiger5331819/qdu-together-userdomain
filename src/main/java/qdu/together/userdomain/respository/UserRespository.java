@@ -16,8 +16,15 @@ import qdu.together.userdomain.respository.dto.ValueToUser;
 public class UserRespository extends Respository<String,UserEntity> 
                              implements RespositoryAccess{
 
+                            
+    /**
+     * 链接数据库的Mybatis映射
+     */
     private UserMapper mapper;
 
+    /**
+     * 单例模式
+     */
     private volatile static UserRespository instance;
     public static UserRespository getInstance() { 
         if(instance==null){
@@ -28,13 +35,18 @@ public class UserRespository extends Respository<String,UserEntity>
         return instance;  
     }  
 
-
+    /**
+     * 存储库配置
+     */
     private UserRespository (){
 
         super(new ConcurrentHashMap<>(),
-              new ConcurrentHashMap<>(),127,99999);    
+              new ConcurrentHashMap<>(),127,500);    
     }
     
+    /**
+     * 存储库初始化
+     */
     @Override
     public void Configuration(){
             UserDomainCore core=UserDomainCore.getInstance();
@@ -46,6 +58,7 @@ public class UserRespository extends Respository<String,UserEntity>
             }
             System.out.println("UserRespository is ready!");
     }  
+
     private List<User>getAllUser(){
         return mapper.findAll();
     }
@@ -58,37 +71,60 @@ public class UserRespository extends Respository<String,UserEntity>
 
     @Override
     public Object getEntity(Object obj) {
-        return get((String)obj);
+        UserEntity entity=get((String)obj);
+        if(entity==null){
+            User newuser=mapper.findbyid((String)obj);
+            if(newuser==null)return null;
+            else{
+                entity=new UserEntity(newuser);
+                addEntityToAddQueue(entity);
+            }
+        }
+        return entity;
     }
 
     @Override
-    public void updateEntity(Object obj) {
-        UserEntity entity=(UserEntity)obj;    
-        changeEntity(getEntityIdentity(entity), entity);
+    public Boolean updateEntity(Object obj) {
+        UserEntity entity=(UserEntity)obj;
+        if(saveEntity(entity)){
+            if(changeEntity(getEntityIdentity(entity), entity)){
+                return true;
+            }else return false;            
+        }else return false;
     }
 
     @Override
-    public void removeEntity(Object obj) {
-        removeEntity((String)obj);
+    public Boolean removeEntity(Object obj) {
+        if(remove((String)obj)){
+            return true;
+        }else return false;
+        
     }
 
     @Override
-    public void putEntity(Object obj) {
-        addEntityToAddQueue((UserEntity)obj);
+    public Boolean putEntity(Object obj) {
+        if(addEntityToAddQueue((UserEntity)obj)){
+            return true;
+        }else return false;
     }
 
     @Override
-    public void saveEntity(UserEntity v) {
+    protected Boolean saveEntity(UserEntity v) {
         ValueToUser dto=new ValueToUser();        
-        mapper.update((User) dto.changeData(v.getValue()));
-        System.out.println("Save success!");
+        if(mapper.update((User) dto.changeData(v.getValue()))!=0){
+            System.out.println("Save success!");
+            return true;
+        }else return false;
     }
-
+    
     @Override
-    public void deleteEntity(Object obj) {
-        delete((String)obj);
-        mapper.delete((String)obj);
-
+    public Boolean deleteEntity(Object obj) {
+        if(delete((String)obj)){
+            if(mapper.delete((String)obj)!=0){
+                return true;
+            }else return false;
+        }else return false;
+       
     }
 
 }
