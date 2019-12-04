@@ -84,7 +84,29 @@ ResultQueueName从注解@ResultQueue中获得，注解使用方法：
 Update：2019.12.2  
 Version 1  
 · 为核心增加包扫描功能并且增加@DomainService与@DomainRespository注解  
-· DomainCore现在可以通过扫描注解来自动配置增加了@DomainRespo注解的Respository与自动路由增加了@DomainService注解的NetService  
+· DomainCore现在可以通过扫描注解来自动配置增加了@DomainRespository注解的Respository与自动路由增加了@DomainService注解的NetService  
+
+```Java
+@DomainService(ServiceName = "ServiceName")
+public class ServiceExample implements NetService {
+
+    @Override
+    public void doService(Message message) {
+    .........
+    }
+    
+}
+```
+
+```Java
+@DomainRespository(RespositoryName = "RespositoryName")
+public class TypeRespository extends Respository<EntityIdentity,Entity> 
+                             implements RespositoryAccess{
+            ...............                             
+}
+```
+
+
 · 同样的也可通过自定义编写接口UserNetService来继承NetService从而不再需要自动获取Core  
 例如这样  
 
