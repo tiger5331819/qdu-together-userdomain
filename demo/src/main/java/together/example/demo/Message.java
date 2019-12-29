@@ -6,6 +6,7 @@ public class Message{
     public String DestinationQueueName;
     public Object Data;
     public String isSuccessBoolean;
+    public String Remark="NetServiceAOP";
 
     @Override
     public String toString() {

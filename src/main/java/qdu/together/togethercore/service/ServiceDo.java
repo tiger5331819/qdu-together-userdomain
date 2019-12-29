@@ -6,13 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DomainService{
+public @interface ServiceDo{
     /**
-     * 领域服务名称
-     * @return String
+     * 服务函数
      */
-    String ServiceName();
 }

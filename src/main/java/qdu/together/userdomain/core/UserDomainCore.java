@@ -1,5 +1,7 @@
 package qdu.together.userdomain.core;
 
+import java.util.ArrayList;
+
 import qdu.together.togethercore.amqp.AMQPNet;
 import qdu.together.togethercore.core.DomainCore;
 
@@ -19,7 +21,7 @@ public class UserDomainCore extends DomainCore {
     }
 
     private UserDomainCore() {
-          super("UserDomain","qdu.together.userdomain");
+          super("UserDomain","qdu.together",new ArrayList<>());
     }
 
     @Override

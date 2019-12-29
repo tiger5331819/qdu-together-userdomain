@@ -1,7 +1,5 @@
 package qdu.together.userdomain.main;
 
-import java.io.IOException;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +13,7 @@ import qdu.together.userdomain.core.UserDomainCore;
 @ComponentScan("qdu.together.togethercore.amqp")
 public class Application {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args){
         UserDomainCore.getInstance().run(SpringApplication.run(Application.class, args));
     }
     

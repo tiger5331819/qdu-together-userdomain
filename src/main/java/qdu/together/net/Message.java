@@ -11,6 +11,7 @@ public class Message{
     public String DestinationQueueName;//目的通道名称
     public Object Data;//携带的数据
     public String isSuccessBoolean;//所请求服务状态标识
+    public String Remark="NetServiceAOP";
 
     @Override
     public String toString() {

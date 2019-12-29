@@ -42,6 +42,106 @@ To be continue
 2. *Update* 为更新日期与当天更新版本号  
 3. ***正文*** 为更新内容
 
+### Vesion 0.4  
+
+Update：2019.12.30  
+version 1  
+· 核心名字正式更名  
+· 核心优化：  
+
+1. 增加了类加载模块与核心AOP解析模块，现已经可以通过对框架注解标注的类进行解析并自动装载。  
+
+2. 增加了可自定义AOP的模块与JDK代理模块，现已经可以通过使用模块来快速构建AOP方法增强。  
+
+3. 增加了自定义注解的解析功能，现已经可以通过核心来获得自定义类注解标注的类的反射。  
+
+4. 优化了框架方法的调用编程难度，现已经不需要继承接口，通过注解的方式来装载方法，并且支持自定义方法注解，前提是需要有注入框架中的对应AOP增强类，如下所示：  
+
+#### 代码示例  
+
+##### 通过注解装载方法  
+
+```Java
+@DomainService(ServiceName = "ServiceExample")
+public class ServiceExample{
+
+    @ServiceDo
+    public void doService(Message message) {
+        ..............
+    }
+
+    @myannotation
+    public void dome(Message message){
+        ..............
+    }
+}  
+```
+
+##### 自定义AOP  
+
+如果需要添加到框架中则需要```@DomainAOP```与```@Type```进行标注，如下所示：  
+
+```Java
+@DomainAOP(DomainAOPName = "myaop")
+@Type(TypeMessage = TypeMessage.Message)
+public class myaop extends AOP {
+
+    public myaop(..........) {
+        super(myannotation.class);
+    }
+
+    ................
+}
+```
+
+如果不需要添加到框架中则不需要注解进行标注，并建议使用JDKproxy模块：
+
+```Java
+public class myaop extends JDKproxy{
+    ............
+}
+```
+
+并通过此方法来创建JDK代理
+
+```Java
+public Object createProxy(Object aopMethod);
+```
+
+##### 自定义方法调用**(必须有自定义的AOP添加到框架中)**  
+
+```Java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface myannotation{
+}
+```
+
+##### 源码解析  
+
+通过```@DomainAOP(DomainAOPName="AOPName")``` 标注的AOP来寻找到被自定义注解标注的方法  
+
+```Java
+for (Annotation annotation : method.getAnnotations()) {
+    if (annotation.annotationType().getSimpleName().equals(classDo.getSimpleName())){
+        ...............
+        method.invoke(clazz.newInstance(), object);
+        ...............
+    }
+```
+
+核心AOP模块通过```@DomainAOP```的AOP类来对```@Type```标注的类型进行不同的消息传递处理。
+
+```Java
+for (Annotation annotation : clazz.getAnnotations()) {
+    if (annotation.annotationType().getSimpleName().equals("Type")) {
+        ..............
+    }
+```
+
+PS： 所有的AOP模块都提供了默认的prepare与finsh这两个切面，如果需要多个切面或者别的增强方式，需要自己与prepare()与finsh()方法中进行定义，如果对AOP功能有着更多的需求，需要使用与spring整合的AspectJ框架。  
+
 ### Vesion 0.3
 
 Update：2019.12.4
