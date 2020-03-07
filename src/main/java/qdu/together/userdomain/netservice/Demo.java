@@ -10,7 +10,7 @@ import qdu.together.togethercore.rpc.RPCClient;
 import qdu.together.togethercore.rpc.RPCService;
 
 @RestController()
-@RequestMapping("/Demoe")
+@RequestMapping("/Demo")
 public class Demo {
 
     @GetMapping("/RPCDemo")
