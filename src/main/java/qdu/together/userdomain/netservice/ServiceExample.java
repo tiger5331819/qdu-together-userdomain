@@ -1,13 +1,13 @@
 package qdu.together.userdomain.netservice;
 
 import qdu.together.net.Message;
-import qdu.together.togethercore.respository.RespositoryAccess;
+import qdu.together.togethercore.respository.RepositoryAccess;
 import qdu.together.togethercore.service.DomainService;
 import qdu.together.togethercore.service.ServiceDo;
 import qdu.together.userdomain.aop.myannotation;
 import qdu.together.userdomain.core.UserDomainCore;
 import qdu.together.userdomain.entity.UserEntity;
-import qdu.together.userdomain.respository.UserRespository;
+import qdu.together.userdomain.respository.UserRepository;
 
 /**
  * 领域对外响应请求服务需要加上注解@ServiceDo
@@ -27,7 +27,7 @@ public class ServiceExample{
     public void doService(Message message) {
         System.out.println("ServiceExample");   
         UserDomainCore core=UserDomainCore.getInstance();  
-        RespositoryAccess res= (UserRespository) core.getRespository("UserRespository");//通过核心得到对应存储库
+        RepositoryAccess res= (UserRepository) core.getRepository("UserRepository");//通过核心得到对应存储库
         
         UserEntity entity= (UserEntity) res.getEntity(message.Data);//从存储库中得到实体
         message.Data=entity.getValue();//从实体中得到值对象
@@ -43,7 +43,7 @@ public class ServiceExample{
     public void dome(Message message){
         System.out.println("dome");   
         UserDomainCore core=UserDomainCore.getInstance();  
-        RespositoryAccess res= (UserRespository) core.getRespository("UserRespository");//通过核心得到对应存储库
+        RepositoryAccess res= (UserRepository) core.getRepository("UserRepository");//通过核心得到对应存储库
         
         UserEntity entity= (UserEntity) res.getEntity(message.Data);//从存储库中得到实体
         message.Data=entity.getValue();//从实体中得到值对象

@@ -18,8 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import qdu.together.net.Message;
-import qdu.together.togethercore.respository.DomainRespository;
-import qdu.together.togethercore.respository.RespositoryAccess;
+import qdu.together.togethercore.respository.DomainRepository;
+import qdu.together.togethercore.respository.RepositoryAccess;
 import qdu.together.togethercore.service.DomainService;
 
 /**
@@ -47,7 +47,7 @@ public abstract class DomainCore implements ApplicationContextAware {
         this.DomainName = domainName;
         try {
             ClassSet.add(DomainService.class);
-            ClassSet.add(DomainRespository.class);
+            ClassSet.add(DomainRepository.class);
             ClassSet.add(DomainAOP.class);
             ClassSet.addAll(classset);
             ClassScanner scanner = new ClassScanner(packageName,ClassSet);
@@ -65,14 +65,14 @@ public abstract class DomainCore implements ApplicationContextAware {
     }
 
     private void CoreConfiguration() {
-        Map<String, Class<?>> Respository = Classes.get("DomainRespository");
+        Map<String, Class<?>> Respository = Classes.get("DomainRepository");
         for (Entry<String, Class<?>> res : Respository.entrySet()) {
             Class<?> anno = res.getValue();
             Method[] methods = anno.getMethods();
             for (Method method : methods) {
                 if (method.getName().equals("getInstance")) {
                     try {
-                        RespositoryAccess acc= (RespositoryAccess) method.invoke(anno);
+                        RepositoryAccess acc= (RepositoryAccess) method.invoke(anno);
                         acc.Configuration();
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         e.printStackTrace();
@@ -115,13 +115,13 @@ public abstract class DomainCore implements ApplicationContextAware {
      * @param RespositoryName
      * @return
      */
-    public RespositoryAccess getRespository(String RespositoryName){
-        Class<?>anno=Classes.get("DomainRespository").get(RespositoryName);
+    public RepositoryAccess getRepository(String RepositoryName){
+        Class<?>anno=Classes.get("DomainRespository").get(RepositoryName);
         Method[] methods = anno.getMethods();
         for(Method method :methods){
             if (method.getName().equals("getInstance")) {
                 try {
-                    return (RespositoryAccess) method.invoke(anno);
+                    return (RepositoryAccess) method.invoke(anno);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

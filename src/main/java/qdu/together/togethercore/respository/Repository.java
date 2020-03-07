@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
  * @param <K> Key
  * @param <V> Value
  */
-public abstract class Respository<K, V> extends Thread {
+public abstract class Repository<K, V> extends Thread {
     private Map<K, V> Entity;//实体缓存
     private Map<K, Integer> EntityTTL;//实体生存周期映射
     private Queue<V> AddEntity = new LinkedList<V>();
@@ -26,7 +26,7 @@ public abstract class Respository<K, V> extends Thread {
      * @param Cachesize 缓存大小
      * @param Timeout 过期时间（单位为次数 50ms/次）
      */
-    protected Respository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize,int Timeout) {
+    protected Repository(Map<K, V> Entity, Map<K, Integer> EntityTTL, int Cachesize,int Timeout) {
         this.Entity = Entity;
         this.EntityTTL = EntityTTL;
         this.Cachesize = Cachesize;

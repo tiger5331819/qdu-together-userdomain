@@ -42,6 +42,54 @@ To be continue
 2. *Update* 为更新日期与当天更新版本号  
 3. ***正文*** 为更新内容
 
+### Vesion 0.5  
+
+Update 2020.3.7  
+version 1  
+·新增RPC：  
+
+增加了RPC客户端和RPC服务端，通过注解和注册来进行远程函数注册，利用json可以跨语言调用。  
+#### 代码示例  
+
+##### 通过注解标注注册RPC调用类和调用函数  
+
+```@RPC``` 用于标注此类是否为RPC调用类，使用了该注解```@PRCMethod```才会生效  
+
+```@PRCMethod``` 用于标注RPC服务端调用的具体函数，```MethodName``` 用于标注RPC服务端调用函数的函数名  
+
+```Java
+@RPC
+public class RPCTest{
+    @RPCMethod(MethodName = "Test")
+    public Param2 Add(String a ,String b){
+        return new Param2(a+b);
+    }
+}
+```  
+
+service注册的是被```@RPC```标注的类，以及提供一个对外搜索的名字
+
+```Java
+RPCService service = new RPCService(9010);//创建RPC服务端并绑定端口
+service.register("RPCTest", RPCTest.class);//注册RPC调用类
+service.start();//启动
+```  
+
+使用RPC客户端的时候必须遵循规则：  
+
+1. Java函数需要标明注册的类名称  
+
+2. 需要注明需要调用函数的参数名称  
+
+3. 需要有准确的参数  
+
+4. 需要标明返回结果的类型  
+
+```Java
+RPCClient Client=new RPCClient(new InetSocketAddress("localhost",9010));//创建RPC客户端并连接  
+Param2  obj= (Param2)Client.JavaRemoteProxy("RPCTest", "Test", new Object[]{new Param("苏琥元","100")}, Param2.class);//调用远程函数并传入对应参数
+```  
+
 ### Vesion 0.4  
 
 Update：2019.12.30  
@@ -194,15 +242,13 @@ public class ServiceExample implements NetService {
     public void doService(Message message) {
     .........
     }
-    
 }
 ```
 
 ```Java
 @DomainRespository(RespositoryName = "RespositoryName")
-public class TypeRespository extends Respository<EntityIdentity,Entity> 
-                             implements RespositoryAccess{
-            ...............                             
+public class TypeRespository extends Respository<EntityIdentity,Entity> implements RespositoryAccess{
+            ...............
 }
 ```
 

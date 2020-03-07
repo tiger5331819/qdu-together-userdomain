@@ -11,6 +11,7 @@ import qdu.together.userdomain.core.UserDomainCore;
 @MapperScan("qdu.mapping")
 @ComponentScan("qdu.together.net")
 @ComponentScan("qdu.together.togethercore.amqp")
+@ComponentScan("qdu.together.userdomain")
 public class Application {
 
     public static void main(String[] args){

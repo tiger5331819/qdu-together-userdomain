@@ -7,9 +7,6 @@ import com.alibaba.fastjson.JSONObject;
 import qdu.together.net.Message;
 import qdu.together.net.rabbitmq.MQproduce;
 import qdu.together.togethercore.core.AOP;
-import qdu.together.togethercore.core.DomainAOP;
-import qdu.together.togethercore.core.Type;
-import qdu.together.togethercore.core.TypeMessage;
 import qdu.together.togethercore.service.ServiceDo;
 
 /**

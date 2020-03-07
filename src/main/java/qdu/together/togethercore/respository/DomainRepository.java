@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DomainRespository{
+public @interface DomainRepository{
     /**
      * 存储库名称
      * @return String
      */
-    String RespositoryName();
+    String RepositoryName();
 }

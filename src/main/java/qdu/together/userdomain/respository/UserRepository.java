@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import qdu.mapping.UserMapper;
-import qdu.together.togethercore.respository.DomainRespository;
-import qdu.together.togethercore.respository.Respository;
-import qdu.together.togethercore.respository.RespositoryAccess;
+import qdu.together.togethercore.respository.DomainRepository;
+import qdu.together.togethercore.respository.Repository;
+import qdu.together.togethercore.respository.RepositoryAccess;
 import qdu.together.userdomain.core.UserDomainCore;
 import qdu.together.userdomain.dao.User;
 import qdu.together.userdomain.entity.UserEntity;
 import qdu.together.userdomain.respository.dto.ValueToUser;
 
-@DomainRespository(RespositoryName = "UserRespository")
-public class UserRespository extends Respository<String,UserEntity> 
-                             implements RespositoryAccess{
+@DomainRepository(RepositoryName = "UserRepository")
+public class UserRepository extends Repository<String,UserEntity> 
+                             implements RepositoryAccess{
 
                             
     /**
@@ -25,11 +25,11 @@ public class UserRespository extends Respository<String,UserEntity>
     /**
      * 单例模式
      */
-    private volatile static UserRespository instance;
-    public static UserRespository getInstance() { 
+    private volatile static UserRepository instance;
+    public static UserRepository getInstance() { 
         if(instance==null){
-            synchronized(UserRespository.class){
-                if(instance==null) instance=new UserRespository();
+            synchronized(UserRepository.class){
+                if(instance==null) instance=new UserRepository();
             }
         } 
         return instance;  
@@ -38,7 +38,7 @@ public class UserRespository extends Respository<String,UserEntity>
     /**
      * 存储库配置
      */
-    private UserRespository (){
+    private UserRepository (){
 
         super(new ConcurrentHashMap<>(),
               new ConcurrentHashMap<>(),127,500);    
