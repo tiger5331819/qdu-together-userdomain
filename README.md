@@ -10,12 +10,12 @@
 依赖项配置：配置[application.properties](src/main/resources/application.properties)  其余配置通过Java Annotation来实现
 
 基本思想：DDD（*Domain-Driven-Design*）**[Eric Evans]**
-> · 通过spring-mybatis工具来进行Spring与Mybatis整合  
-· 通过spring-amqp工具来进行Spring与RabbitMQ整合  
-· Respository是对Mybatis工具集的抽象与二次封装，并实现简单的LRU  
-· RabbitMQ作为对外适配器，并由Core进行服务Route  
-· Core通过AOP对服务请求进行响应  
-· 领域对象为Entity，通过访问Entity根完成简单的领域服务  
+> · 通过 spring-mybatis 工具来进行 Spring 与 Mybatis 整合  
+· 通过 spring-amqp 工具来进行 Spring与 RabbitMQ 整合  
+· Respository 是对 Mybatis工 具集的抽象与二次封装，并实现简单的 LRU  
+· RabbitMQ 作为对外适配器，并由Core进行服务Route  
+· Core 通过 AOP 对服务请求进行响应  
+· 领域对象为 Entity ，通过访问 Entity 根完成简单的领域服务  
 
 架构风格：独立构件与调用返回  
 架构选择：层次架构（**六边形架构**）与微内核架构  
@@ -24,13 +24,19 @@
 
 ![六边形架构 ](六边形架构.png "六边形架构")  
 
-### 后台框架详解  
+### 后台框架解释  
 
-![系统类图 ](系统类图.png "系统类图")  
+整体框架包含着：核心、Repository 模式、RPC、IOC、AOP 以及 AMQP 支持。  
 
 核心：在DomainCore中实现类扫描与AOP，通过注解的方式来进行流程管理。  
 
-To be continue  
+Repository： 通过使用 ORM 等工具来链接数据库，并对数据进行管理。  
+
+AMQP 模块：对 Spring-amqp 进行封装。  
+
+IOC：在对原本 Spring-framework 的支持的基础上对框架特定的工具支持控制反转功能和依赖注入，通过注解来进行控制反转过程。  
+
+AOP： 提供自定义 AOP 与 JDK 代理的 AOP 方式。  
 
 ---
 
@@ -49,6 +55,7 @@ version 1
 ·新增RPC：  
 
 增加了RPC客户端和RPC服务端，通过注解和注册来进行远程函数注册，利用json可以跨语言调用。  
+
 #### 代码示例  
 
 ##### 通过注解标注注册RPC调用类和调用函数  
@@ -246,12 +253,11 @@ public class ServiceExample implements NetService {
 ```
 
 ```Java
-@DomainRespository(RespositoryName = "RespositoryName")
-public class TypeRespository extends Respository<EntityIdentity,Entity> implements RespositoryAccess{
+@DomainRepository(RespositoryName = "RepositoryName")
+public class TypeRepository extends Repository<EntityIdentity,Entity> implements RepositoryAccess{
             ...............
 }
 ```
-
 
 · 同样的也可通过自定义编写接口UserNetService来继承NetService从而不再需要自动获取Core  
 例如这样  
@@ -262,16 +268,16 @@ public interface UserNetService extends NetService{
 }
 ```
 
-非常建议使用依赖倒置的方法来访问Respository，即使用RespositoryAccess  
+非常建议使用依赖倒置的方法来访问Repository，即使用RepositoryAccess  
 
 ```Java
-RespositoryAccess res= (RespositoryType) core.getRespository("RespositoryName");
+RepositoryAccess res= (RepositoryType) core.getRepository("RepositoryName");
 ```
 
 当然也可以不使用RespositoryAccess来访问，毕竟Respository都需要继承RespositoryAccess接口  
 
 ```Java
-UserRespository res= (RespositoryType) core.getRespository("RespositoryName");
+UserRepository res= (RepositoryType) core.getRepository("RepositoryName");
 ```
 
 · 还有一点忘了说明了，关于Core的启动方式也迎来了新的改变  

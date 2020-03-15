@@ -134,10 +134,9 @@ public class RPCService implements RPCServer {
                                                 flag++;
                                             }
                                         }else{
-                                            int flag=0;
-                                            for (Type type : types) {
+                                            
+                                            for (int flag=0;flag<types.length;flag++) {
                                                 params[flag]=objlist.get(flag);
-                                                flag++;
                                             }
                                         }
                                        
