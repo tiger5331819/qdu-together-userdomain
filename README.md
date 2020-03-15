@@ -38,9 +38,30 @@ IOC：在对原本 Spring-framework 的支持的基础上对框架特定的工�
 
 AOP： 提供自定义 AOP 与 JDK 代理的 AOP 方式。  
 
----
+RPC： 提供自定义的 RPC 客户端与服务端的构建与使用方法，通过注解告知需要注入的注册函数。  
 
-## 更新说明 *（我是真的懒，不管了就写这了）*
+> 样例代码在于 [Demo](/demo) 目录下与 [userdomain](src/main/java/qdu/together/userdomain) 中
+
+---  
+
+## 特别感谢  
+
+关于 .NET Core 端框架在此：[c#实现领域驱动](https://github.com/tiger5331819/PointCloudCore-DDD)  
+
+框架的编写是我大学期间最想做的一件事情，也是我大学期间的一个阶段性的结束，通过编写框架，从而让我眼界大开，增长见识。我想成为一名系统架构设计师，这是我踏上这条道路的第一个脚印，千里之行始于足下。  
+
+要感谢我的家人，是他们在我的背后默默的给予我前进的动力，感谢我的爱人，她是我航行路上温暖的避风港，感谢我的好伙伴，是他的设想给予了我前进的方向。  
+
+最后还要感谢刘晓云老师孜孜不倦的指导，正是老师的支持和教诲，能够让我坚持并最终完成整个框架的设计与编写。  
+
+如果对框架有不理解的，需要我补充的，欢迎联系我，我们一起探讨，共同进步~~~  
+
+·QQ: 563954901  
+·微信： shy563954901  
+·电话： 17853241669  
+·E-mail： tiger5331819@163.com  
+
+## 更新说明与日志  
 
 格式说明：
 
@@ -238,8 +259,8 @@ ResultQueueName从注解@ResultQueue中获得，注解使用方法：
 
 Update：2019.12.2  
 Version 1  
-· 为核心增加包扫描功能并且增加@DomainService与@DomainRespository注解  
-· DomainCore现在可以通过扫描注解来自动配置增加了@DomainRespository注解的Respository与自动路由增加了@DomainService注解的NetService  
+· 为核心增加包扫描功能并且增加@DomainService与@DomainRepository注解  
+· DomainCore现在可以通过扫描注解来自动配置增加了@DomainRepository注解的Repository与自动路由增加了@DomainService注解的NetService  
 
 ```Java
 @DomainService(ServiceName = "ServiceName")
@@ -253,7 +274,7 @@ public class ServiceExample implements NetService {
 ```
 
 ```Java
-@DomainRepository(RespositoryName = "RepositoryName")
+@DomainRepository(RepositoryName = "RepositoryName")
 public class TypeRepository extends Repository<EntityIdentity,Entity> implements RepositoryAccess{
             ...............
 }
